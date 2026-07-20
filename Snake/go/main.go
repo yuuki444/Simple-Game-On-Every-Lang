@@ -26,39 +26,45 @@ func main() {
 	ticker := time.NewTicker(250 * time.Millisecond)
 	defer ticker.Stop()
 
-	for {
-		clearScreen()
-		draw(snake, food, score)
+	//fixed!!!!!!!
+	clearScreen()
+	draw(snake, food, score)
 
+	for {
 		select {
 		case b := <-inputChan:
 			switch b {
 			case 'w', 'W':
-				if dir.y != 1 { dir = Point{x: 0, y: -1} }
+				if dir.y != 1 {
+					dir = Point{x: 0, y: -1}
+				}
 			case 's', 'S':
-				if dir.y != -1 { dir = Point{x: 0, y: 1} }
+				if dir.y != -1 {
+					dir = Point{x: 0, y: 1}
+				}
 			case 'a', 'A':
-				if dir.x != 1 { dir = Point{x: -1, y: 0} }
+				if dir.x != 1 {
+					dir = Point{x: -1, y: 0}
+				}
 			case 'd', 'D':
-				if dir.x != -1 { dir = Point{x: 1, y: 0} }
+				if dir.x != -1 {
+					dir = Point{x: 1, y: 0}
+				}
 			case 'q', 'Q':
 				fmt.Println("\nВыход из игры!")
 				return
 			}
 		case <-ticker.C:
-
 			newHead := Point{x: snake[0].x + dir.x, y: snake[0].y + dir.y}
 
-
 			if newHead.x < 0 || newHead.x >= width || newHead.y < 0 || newHead.y >= height {
-				fmt.Println("\n врезались в стену! Игра окончена.")
+				fmt.Println("\nВрезались в стену! Игра окончена.")
 				return
 			}
 
-
 			for _, part := range snake {
 				if newHead.x == part.x && newHead.y == part.y {
-					fmt.Println("\n Змейка укусила себя! Игра окончена.")
+					fmt.Println("\nЗмейка укусила себя! Игра окончена.")
 					return
 				}
 			}
@@ -75,6 +81,8 @@ func main() {
 			} else {
 				snake = snake[:len(snake)-1]
 			}
+			clearScreen()
+			draw(snake, food, score)
 		}
 	}
 }
@@ -91,10 +99,8 @@ func clearScreen() {
 	fmt.Print("\033[H\033[2J")
 }
 
-
 func draw(snake []Point, food Point, score int) {
 	fmt.Printf("Счет: %d | Управление: W/A/S/D + Enter (Q - выход)\n", score)
-
 
 	for i := 0; i < width+2; i++ {
 		fmt.Print("#")
@@ -102,10 +108,10 @@ func draw(snake []Point, food Point, score int) {
 	fmt.Println()
 
 	for y := 0; y < height; y++ {
-		fmt.Print("#") 
+		fmt.Print("#")
 		for x := 0; x < width; x++ {
 			if x == snake[0].x && y == snake[0].y {
-				fmt.Print("O") 
+				fmt.Print("O")
 			} else if x == food.x && y == food.y {
 				fmt.Print("*")
 			} else {
